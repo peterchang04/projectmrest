@@ -6,4 +6,4 @@ jobs:
       - image: peterchang04/projectmrest
     steps:
       - checkout
-      - run: nodemon -L /app/src/main
+      - run: yarn test

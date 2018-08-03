@@ -1,5 +1,13 @@
 {
+  "scripts": {
+    "test": "mocha test"
+  },
   "dependencies": {
     "restify": "^7.2.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^4.0.0",
+    "mocha": "^5.2.0"
   }
 }

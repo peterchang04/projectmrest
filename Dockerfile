@@ -10,6 +10,7 @@ ENV APP_DIR /app
 WORKDIR $APP_DIR
 
 # Dependencies
+RUN yarn
 RUN yarn add restify
 RUN yarn global add nodemon
 

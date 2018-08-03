@@ -6,4 +6,5 @@ jobs:
       - image: peterchang04/projectmrest
     steps:
       - checkout
+      - run: yarn
       - run: yarn test

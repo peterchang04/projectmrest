@@ -1,0 +1,9 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/tmp
+    docker:
+      - image: peterchang04/projectmrest
+    steps:
+      - checkout
+      - run: nodemon -L /app/src/main

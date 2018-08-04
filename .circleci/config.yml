@@ -12,7 +12,7 @@ workflows:
   version: 2
   dev_test_and_stage:
     jobs:
-      - test
+      - test:
         filters:
             branches:
                 only:

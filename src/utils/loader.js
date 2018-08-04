@@ -26,8 +26,33 @@ module.exports.loadRoutes = function loadRoutes(server, models) {
   require('fs').readdirSync(normalizedPath).forEach((file) => {
     if (file.substring(file.length - 3, file.length) === '.js') {
       var filename = file.replace('.js', '');
+      var fileRoutes = require(`../routes/${filename}`);
+      // do some checks - must be array
+      if (!Array.isArray(fileRoutes)) {
+        throw `Failed to load route [${filename}] must export as array. was [${typeof fileRoutes}]`;
+      }
+      // do some checks, individual routes must be named right
+      fileRoutes.forEach(route => {
+        if (!route.method || !route.path || !route.model || !route.func) {
+          console.error('route:', route);
+          throw "route must be in format { method, path, model, func }";
+        }
+      });
       routes = routes.concat(require(`../routes/${filename}`));
     }
   });
   return routes;
+};
+
+// wires everything together
+module.exports.wireRoutesToModels = function wireRoutesToModels(routes, models, server) {
+  routes.forEach((route) => {
+    if (!models[route.model]) {
+      throw `Failed to wire [${route.path}] to [/src/models/${route.model}]`;
+    }
+    if (!models[route.model][route.func]) {
+      throw `Failed to wire [${route.path}] to [/src/models/${route.model}.${route.func}]`;
+    }
+    server[route.method.toLowerCase()](route.path, models[route.model][route.func]);
+  });
 };

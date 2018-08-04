@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:8
 MAINTAINER peter
 
 # Ports
@@ -9,9 +9,12 @@ EXPOSE 51337
 ENV APP_DIR /app
 WORKDIR $APP_DIR
 
-# Dependencies
-RUN yarn
-RUN yarn add restify
+# Copy package manager files
+COPY package*.json ./
+COPY yarn.lock ./
+
+# Get Dependencies
+RUN yarn install
 RUN yarn global add nodemon
 
 # Healthcheck

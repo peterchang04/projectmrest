@@ -1,21 +1,49 @@
 var restify = require('restify');
 var server = restify.createServer();
 var loader = require('./utils/loader');
+var mdb = require('./utils/mdb');
 
-// LOAD MODELS
-var models = loader.loadModels();
+// FIRST, CONNECT TO DATASOURCES
+mdb.connect()
+.then(() => console.log('MongoDB connected'))
+.then(() => bootApp())
+.catch((e) => {
+  console.error(e);
+  // hard exit on db connection error
+  process.exit(1);
+})
 
-// LOAD ROUTES
-var routes = loader.loadRoutes(server, models);
+function bootApp() {
+  // GLOBAL PRE-REQUEST HANDLER
+  server.pre((req, res, next) => {
+    console.log('pre', res);
+    next();
+  });
 
-// ADD ROUTES TO SERVER
-routes.forEach((route) => {
-  server[route.method.toLowerCase()](route.path, models[route.model][route.func]);
-});
+  // GLOBAL POST-REQUEST HANDLER
+  server.use((req, res, next) => {
+    console.log('use', res);
+    next();
+  });
 
-// START SERVER
-server.listen(51337, () => {
-  console.log('%s listening at %s', server.name, server.url);
-});
+  // LOAD MODELS
+  var models = loader.loadModels();
 
+  // LOAD ROUTES
+  var routes = loader.loadRoutes(server, models);
+
+  // ADD ROUTES TO SERVER
+  loader.wireRoutesToModels(routes, models, server);
+
+
+
+  // GLO
+
+  // START SERVER
+  server.listen(51337, () => {
+    console.log('%s listening at %s', server.name, server.url);
+  });
+}
+
+// EXPORT FOR TESTING
 module.exports = server;

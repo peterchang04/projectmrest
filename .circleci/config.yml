@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     working_directory: ~/tmp
     docker:
       - image: peterchang04/projectmrest
@@ -8,3 +8,12 @@ jobs:
       - checkout
       - run: yarn
       - run: yarn test
+workflows:
+  version: 2
+  dev_test_and_stage:
+    jobs:
+      - test
+        filters:
+            branches:
+                only:
+                  - development

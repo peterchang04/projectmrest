@@ -3,6 +3,7 @@
     "test": "mocha test"
   },
   "dependencies": {
+    "mongodb": "^3.1.1",
     "restify": "^7.2.1"
   },
   "devDependencies": {

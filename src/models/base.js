@@ -64,3 +64,17 @@ module.exports.upsertMongoTest = async (params) => {
   // use get function to return new record
   return await module.exports.getMongoTest({ _id: args._id });
 };
+
+module.exports.deleteMongoTest = async (params) => {
+  const args = defineArgs(params, {
+    _id: { required: true, type: "ObjectID" }
+  });
+
+  const request = await mdb.collection('test').deleteOne({ _id: args._id });
+  if (request.deletedCount > 1) {
+    throw new Error(`more than one [test] deleted _id: ${args._id}`);
+  } if (request.deletedCount === 0) {
+    return [];
+  }
+  return [{ _id: args._id, deleted: 1 }];
+};

@@ -50,6 +50,13 @@ if (true /* TODO: is developemnt */) {
       params: {
         _id: { required: false,  type: "ObjectID" }
       }
+    },
+    {
+      method: "DELETE", path: "/v1/mongotest/:_id",
+      model: "base", func: "deleteMongoTest",
+      params: {
+        _id: { required: true,  type: "ObjectID" }
+      }
     }
   ]);
 }

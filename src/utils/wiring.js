@@ -56,6 +56,9 @@ module.exports.wireRoutesToModels = (routes, models, server) => {
       next();
     });
 
-    server[route.method.toLowerCase()](route.path, wrappedFunction);
+    let serverMethod = route.method.toLowerCase();
+    // exception for Delete
+    if (serverMethod === 'delete') serverMethod = 'del'; // server.delete doesn't work, but server.post, server.put does :(
+    server[serverMethod](route.path, wrappedFunction);
   });
 };

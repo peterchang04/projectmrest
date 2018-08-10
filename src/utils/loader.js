@@ -4,10 +4,14 @@ module.exports.loadModels = function loadModels() {
   // solve for path to /src/model
   var normalizedPath = __dirname;
   normalizedPath = normalizedPath.replace('/utils','/models');
+  normalizedPath = normalizedPath.replace('\\utils','\\models');
 
   // load contents of folder into models struct
   require('fs').readdirSync(normalizedPath).forEach((file) => {
-    if (file.substring(file.length - 3, file.length) === '.js') {
+    if (
+      file.substring(file.length - 3, file.length) === '.js'
+      && file.indexOf('.test.js') === -1 // don't load test files
+    ) {
       var filename = file.replace('.js', '');
       models[filename] = require(`../models/${filename}`);
     }
@@ -21,10 +25,14 @@ module.exports.loadRoutes = function loadRoutes(server, models) {
   // solve for path to /src/route
   var normalizedPath = __dirname;
   normalizedPath = normalizedPath.replace('/utils','/routes');
+  normalizedPath = normalizedPath.replace('\\utils','\\routes');
 
   // load contents of folder into routes array
   require('fs').readdirSync(normalizedPath).forEach((file) => {
-    if (file.substring(file.length - 3, file.length) === '.js') {
+    if (
+      file.substring(file.length - 3, file.length) === '.js'
+      && file.indexOf('.test.js') === -1 // don't load test files
+    ) {
       var filename = file.replace('.js', '');
       var fileRoutes = require(`../routes/${filename}`);
       // do some checks - must be array
@@ -42,17 +50,4 @@ module.exports.loadRoutes = function loadRoutes(server, models) {
     }
   });
   return routes;
-};
-
-// wires everything together
-module.exports.wireRoutesToModels = function wireRoutesToModels(routes, models, server) {
-  routes.forEach((route) => {
-    if (!models[route.model]) {
-      throw `Failed to wire [${route.path}] to [/src/models/${route.model}]`;
-    }
-    if (!models[route.model][route.func]) {
-      throw `Failed to wire [${route.path}] to [/src/models/${route.model}.${route.func}]`;
-    }
-    server[route.method.toLowerCase()](route.path, models[route.model][route.func]);
-  });
 };

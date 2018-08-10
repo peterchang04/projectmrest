@@ -1,4 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
+
 const dbName = 'test';
 const option = { useNewUrlParser: true };
 const username = 'app';
@@ -7,22 +8,33 @@ let uri = `mongodb+srv://${encodeURIComponent(`${username}:${password}`)}@cluste
 
 let connection = null;
 
-module.exports.connect = () => new Promise((resolve, reject) => {
-    MongoClient.connect(uri, option, function(err, client) {
-        if (err) {
-          reject(err);
-          return;
-        };
-        resolve(client);
-        connection = client;
-    });
+connect = (callback) => new Promise((resolve, reject) => {
+  MongoClient.connect(uri, option, function(err, client) {
+      if (err) {
+        reject(err);
+        return;
+      };
+      resolve(client);
+      connection = client;
+  });
 });
 
+module.exports.init = async () => {
+  try {
+    connection = await connect();
+  } catch (e) {
+    // hard exit on db connection error
+    console.error(e);
+    process.exit(1);
+  }
+  console.log('MongoDB connected');
+};
+
 module.exports.collection = (colName) => {
-    if(!connection) {
-        throw new Error('Call connect first!');
-    }
-    return connection.db(dbName).collection(colName);
+  if(!connection) {
+      throw new Error('Call connect first!');
+  }
+  return connection.db(dbName).collection(colName);
 }
 
 module.exports.close = () => {
@@ -31,3 +43,11 @@ module.exports.close = () => {
     connection.close();
   }
 }
+
+module.exports.addPaginateColumns = (result, per, page, count) => {
+  result.forEach(row => {
+    row._record = (page - 1) * per;
+    row._recordCount = count;
+  });
+  return result;
+};

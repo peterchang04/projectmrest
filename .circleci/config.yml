@@ -13,7 +13,6 @@ workflows:
   dev_test_and_stage_on_commit:
     jobs:
       - test:
-        filters:
-          branches:
-            only:
-              - development
+          filters:
+            branches:
+              only: development

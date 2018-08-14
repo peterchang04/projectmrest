@@ -21,3 +21,6 @@ steps:
   # push ready-to-deploy image to container registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/projectmrest/development']
+  # deploy to kubernetes 1st time only, in absence of Kube Engine/Workload
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args: ['create', '-f', 'kube.yaml']

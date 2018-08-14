@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: projectmrest-kube-deploy
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: projectmrest
+    spec:
+      containers:
+        - name: projectmrest-container
+          image: gcr.io/projectmrest/development
+          ports:
+            - containerPort: 51337
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: projectmrest-lb
+  labels:
+    run: projectmrest
+spec:
+  selector:
+    app: projectmrest
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+      targetPort: 51337
+      protocol: TCP

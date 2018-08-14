@@ -15,17 +15,30 @@ use bat file (from project dir, windows only)
 ### integration (int) - for staging
 ### production (prod)
 
+# Deployment
+1. push to development branch
+2. Cloud Build Trigger "Stage Deploy on development merge" runs cloudbuild.yaml
+  - builds project
+  - updates image on Google Container Registry (GCR)
+  - pushes image
+  - asks kubernetes to update image
+3. Kubernetes
+  - distributes image to setup
+
 # Google Cloud build
-### setup https://cloud.google.com/cloud-build/docs/quickstart-docker
+### Project: "projectmrest"
+### local setup https://cloud.google.com/cloud-build/docs/quickstart-docker
 login
-gcloud config set project projectm-212101
+gcloud config set project projectmrest
+gcloud config set compute/zone us-east1-b
 ### build+pushing image
 gcloud builds submit --tag gcr.io/projectm-212101/dev .
-
+### kubernetes
+gcloud container clusters create projectmrest-kube-dev
 
 # Docker
 ### To build image
-docker build -t peterchang04/projectmrest
+docker build -t peterchang04/projectmrest .
 ### To push image to dockerhub
 docker push peterchang04/projectmrest
 ### To start container

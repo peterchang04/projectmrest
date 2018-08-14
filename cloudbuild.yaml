@@ -15,7 +15,7 @@ steps:
     args: ['test']
   # build docker image locally
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build' '-t', 'gcr.io/projectmrest/development', '.']
+    args: ['build', '-t', 'gcr.io/projectmrest/development', '.']
   # push ready-to-deploy image to container registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/projectmrest/development:$BRANCH_NAME:$BUILD_ID']

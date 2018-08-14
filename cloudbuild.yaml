@@ -20,4 +20,4 @@ steps:
     args: ['build', '-t', 'gcr.io/projectmrest/development', '.']
   # push ready-to-deploy image to container registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/projectmrest/development:$BRANCH_NAME:$BUILD_ID']
+    args: ['push', 'gcr.io/projectmrest/development']

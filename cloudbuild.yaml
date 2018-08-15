@@ -1,7 +1,7 @@
 steps:
 # pull the latest from repo branch: development
 - name: 'gcr.io/cloud-builders/git'
-  args: ['clone', 'https://github.com/peterchang04/projectmrest']
+  args: ['clone', 'https://github.com/peterchang04/projectmrest.git']
 - name: 'gcr.io/cloud-builders/git'
   args: ['fetch']
 - name: 'gcr.io/cloud-builders/git'
@@ -17,7 +17,7 @@ steps:
   args: ['test']
 # build docker image locally
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/projectmrest/development', '.']
+  args: ['build', '-t', 'gcr.io/projectmrest/development', '-f', 'Dockerfile_cloudbuild', '.']
 # push ready-to-deploy image to container registry
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/projectmrest/development']

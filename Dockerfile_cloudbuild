@@ -9,9 +9,6 @@ EXPOSE 51337
 ENV APP_DIR /app
 WORKDIR $APP_DIR
 
-# Install yarn
-RUN npm install --global yarn
-
 # Copy package manager files
 COPY package*.json ./
 COPY yarn.lock ./
@@ -19,6 +16,9 @@ COPY yarn.lock ./
 # Get Dependencies
 RUN yarn install
 RUN yarn global add nodemon
+
+# Copy Current dir into image
+COPY . $APP_DIR
 
 # Healthcheck
 ENV HEALTHCHECK_URI "http://127.0.0.1:${PORT}/v1/health"

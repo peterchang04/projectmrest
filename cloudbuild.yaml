@@ -29,4 +29,5 @@ steps:
   - |
     gcloud components install kubectl
     gcloud container clusters get-credentials projectmrest-kube-dev --zone us-west1-b
-    kubectl create -f kube.yaml
+    kubectl set image deployment/projectmrest-kube-deploy projectmrest-container=gcr.io/projectmrest/development:latest
+# last line of args was : kubectl create -f kube.yaml

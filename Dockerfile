@@ -22,4 +22,4 @@ ENV HEALTHCHECK_URI "http://127.0.0.1:${PORT}/v1/health"
 HEALTHCHECK --interval=20s --timeout=30s --retries=15 CMD curl --fail ${HEALTHCHECK_URI} || exit 1
 
 # Launch
-CMD nodemon -L $APP_DIR/src/main
+CMD nodemon -L $APP_DIR/src/main.js

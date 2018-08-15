@@ -19,11 +19,10 @@ use bat file (from project dir, windows only)
 1. push to development branch
 2. Cloud Build Trigger "Stage Deploy on development merge" runs cloudbuild.yaml
   - builds project
-  - updates image on Google Container Registry (GCR)
-  - pushes image
+  - pushes image to Google Container Registry (GCR) as [peterchang04/projectmrest/development]
   - asks kubernetes to update image
 3. Kubernetes
-  - distributes image to setup
+  - distributes image to workflow
 
 # Google Kubernetes Engine
 see kube.yaml for w

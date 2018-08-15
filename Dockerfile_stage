@@ -9,6 +9,9 @@ EXPOSE 51337
 ENV APP_DIR /app
 WORKDIR $APP_DIR
 
+# Install yarn
+RUN npm install --global yarn
+
 # Copy package manager files
 COPY package*.json ./
 COPY yarn.lock ./

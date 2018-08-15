@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: projectmrest-kube-deploy
 spec:
-  replicas: 2
+  replicas: 3
   template:
     metadata:
       labels:
@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: projectmrest-container
-          image: gcr.io/projectmrest/development
+          image: gcr.io/projectmrest/development:latest
           ports:
             - containerPort: 51337
 ---

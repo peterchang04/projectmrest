@@ -22,6 +22,7 @@ describe('GET/v1/health', function() {
     chai.request(server)
     .get('/v1/health')
     .end((err, res) => {
+      delete res.body.serverIP; // this key is dynamic
       expect(res.status).to.equal(200);
       expect(res.body).to.deep.equal({
         params_RAW: {},

@@ -17,7 +17,8 @@ spec:
           ports:
             - containerPort: 51337
           env:
-            - THIS_STRING_IS_REPLACED_BY_CLOUDBUILD_YAML
+            - name: FORCE_K8_IMAGE_UPDATE
+              value: THIS_STRING_IS_REPLACED_BY_CLOUDBUILD_YAML
 ---
 apiVersion: v1
 kind: Service

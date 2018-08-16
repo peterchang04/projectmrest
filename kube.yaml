@@ -12,8 +12,12 @@ spec:
       containers:
         - name: projectmrest-container
           image: gcr.io/projectmrest/development:latest
+          # imagePullPolicy is auto set to Always when :latest tag is used. Respecifying to be explicit
+          imagePullPolicy: Always
           ports:
             - containerPort: 51337
+          env:
+            - THIS_STRING_IS_REPLACED_BY_CLOUDBUILD_YAML
 ---
 apiVersion: v1
 kind: Service

@@ -1,5 +1,13 @@
 const asyncMiddleware = require('./asyncMiddleware');
 const param = require('./param');
+const dns = require('dns'); // to solve for server ip
+const os = require('os'); // to solve for server ip
+
+// solve for host ip
+var ip = '';
+dns.lookup(os.hostname(), function(err, add, fam) {
+  ip = add;
+});
 
 // wires everything together
 module.exports.wireRoutesToModels = (routes, models, server) => {
@@ -15,6 +23,7 @@ module.exports.wireRoutesToModels = (routes, models, server) => {
     const wrappedFunction = asyncMiddleware(async (req, res, next) => {
       const envelope = {
         params_RAW: req.params,
+        serverIP: ip,
         target: `${req.route.method}${req.route.path}`
       };
 

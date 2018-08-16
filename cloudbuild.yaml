@@ -28,7 +28,7 @@ steps:
   - '-c'
   - |
     gcloud components install kubectl
-    gcloud container clusters get-credentials projectmrest-kube-cluster --zone us-west1-b
+    gcloud container clusters get-credentials projectmrest-kube-cluster-staging --zone us-west1-b
     kubectl apply -f kube.yaml
 
 # use this line when (re)generating the kube workload : kubectl create -f kube.yaml

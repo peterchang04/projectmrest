@@ -42,3 +42,11 @@ docker build -t peterchang04/projectmrest .
 ### To push image to dockerhub
 docker push peterchang04/projectmrest
 ### To start container
+
+# Redis
+db projectm-redis
+pw wM6js9sgfIhN6DsvphjoRCo4cnuS3I9E
+redis-14119.c1.us-central1-2.gce.cloud.redislabs.com:14119
+# Redsmin (monitoring GUI)
+https://app.redsmin.com/server/5b7769b49630d4fc0510f01d/finder/*
+peter.chang.04@gmail.com *te1!rm

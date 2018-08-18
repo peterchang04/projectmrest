@@ -3,6 +3,7 @@ var server = restify.createServer();
 var loader = require('./utils/loader');
 var wiring = require('./utils/wiring');
 var mdb = require('./utils/mdb');
+var socketio = require('./utils/socketio');
 
 // server always UTC
 process.env.TZ = 'UTC';
@@ -40,11 +41,14 @@ function init(port = 51337) {
       // ADD ROUTES TO SERVER
       wiring.wireRoutesToModels(routes, models, server);
 
-      // START SERVER
+      // START RESTIFY SERVER
       server.listen(port, () => {
         console.log('%s listening at %s', server.name, server.url);
         server.ready = true;
       });
+
+      // START SOCKET.IO
+      socketio.init(server);
 
       resolve(server); // resolve promise. Returns instance of server
     } catch (e) {

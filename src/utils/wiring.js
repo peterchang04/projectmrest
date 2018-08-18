@@ -33,7 +33,7 @@ module.exports.wireRoutesToModels = (routes, models, server) => {
         res.send(200, envelope);
         return next();
       } else {
-        console.log('incoming request:', envelope.target, JSON.stringify(req.params));
+        console.log('incoming request:', envelope.serverIP, envelope.target, JSON.stringify(req.params));
       }
 
       let statusCode = 200;

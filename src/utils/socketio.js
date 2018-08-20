@@ -20,6 +20,10 @@ module.exports.init = (server) => {
     // remember this socket
     sockets[socket.id] = socket;
 
+    socket.on('message', (message) => {
+      console.log(message);
+    });
+
     // remove socket
     socket.on('disconnect', (reason) => {
       console.log(`disconnect ${socket.id}`);

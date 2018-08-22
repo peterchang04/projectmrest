@@ -41,15 +41,15 @@ describe('identifier.generate() run 100 times', function() {
     }
   });
 
-  it('should have string length > 10', () => {
+  it('should have string length > 6', () => {
     for (var i = 0; i < results.length; i++) {
-      expect(results[i].length).to.be.above(10);
+      expect(results[i].length).to.be.above(6);
     }
   });
 
-  it('should split into 3 pieces', () => {
+  it('should split into at least 2 pieces', () => {
     for (var i = 0; i < results.length; i++) {
-      expect(results[i].split('-').length).to.equal(3);
+      expect(results[i].split('-').length).to.be.above(1);
     }
   });
 

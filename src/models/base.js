@@ -65,6 +65,8 @@ module.exports.upsertMongoTest = async (params) => {
   // use get function to return new record
   if (request.result.upserted && request.result.upserted.length) {
     return await module.exports.getMongoTest({ _id: request.result.upserted[0]._id });
+  } else if (request.result.nModified === 1) {
+    return await module.exports.getMongoTest({ _id: args._id });
   }
   // made it here? shouldn't have
   throw new Error('Upsert failed');

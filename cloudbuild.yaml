@@ -1,0 +1,33 @@
+steps:
+# pull the latest from repo branch: development
+- name: 'gcr.io/cloud-builders/git'
+  args: ['clone', 'https://github.com/peterchang04/projectmrest.git']
+- name: 'gcr.io/cloud-builders/git'
+  args: ['fetch']
+- name: 'gcr.io/cloud-builders/git'
+  args: ['checkout', 'development']
+# yarn globals
+- name: 'gcr.io/cloud-builders/yarn'
+  args: ['global', 'add', 'nodemon']
+# install package.json
+- name: 'gcr.io/cloud-builders/yarn'
+  args: ['install']
+# run tests
+- name: 'gcr.io/cloud-builders/yarn'
+  args: ['test']
+# build docker image locally
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/projectmrest/development', '-f', 'Dockerfile_cloudbuild', '.']
+# push ready-to-deploy image to container registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/projectmrest/development']
+# deploy to kubernetes 1st time only, in absence of Kube Engine/Workload
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    gcloud components install kubectl
+    gcloud container clusters get-credentials projectmrest-kube-cluster-staging --zone us-west1-b
+    sed -id "s/THIS_STRING_IS_REPLACED_BY_CLOUDBUILD_YAML/$(date)/g" kube.yaml
+    kubectl apply -f kube.yaml

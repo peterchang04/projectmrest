@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     working_directory: ~/tmp
     docker:
       - image: peterchang04/projectmrest
@@ -8,3 +8,12 @@ jobs:
       - checkout
       - run: yarn
       - run: yarn test
+workflows:
+  version: 2
+  # this build on circleci exists only to run and verify the commit to development + emails as necessary
+  dev_test_and_stage_on_commit:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only: development

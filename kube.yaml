@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: projectmrest-kube-deploy
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: projectmrest
+    spec:
+      containers:
+        - name: projectmrest-container
+          image: gcr.io/projectmrest/development:latest
+          # imagePullPolicy is auto set to Always when :latest tag is used. Respecifying to be explicit
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 51337
+          env:
+            - name: FORCE_K8_IMAGE_UPDATE
+              value: THIS_STRING_IS_REPLACED_BY_CLOUDBUILD_YAML
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: projectmrest-lb
+  labels:
+    run: projectmrest
+spec:
+  selector:
+    app: projectmrest
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+      targetPort: 51337
+      protocol: TCP

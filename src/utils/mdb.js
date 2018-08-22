@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const dbName = 'test';
-const option = { useNewUrlParser: true, connectTimeoutMS: 7000 };
+const option = { useNewUrlParser: true, connectTimeoutMS: 20000 };
 const username = 'app';
 const password = 'lQD2ayo9imUuCaKH';
 // retryWrites = true commented out for indexes ops, which fail when retryWrites=true

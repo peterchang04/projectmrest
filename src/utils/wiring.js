@@ -1,4 +1,3 @@
-const asyncMiddleware = require('./asyncMiddleware');
 const param = require('./param');
 const dns = require('dns'); // to solve for server ip
 const os = require('os'); // to solve for server ip
@@ -69,5 +68,14 @@ module.exports.wireRoutesToModels = (routes, models, server) => {
     // exception for Delete
     if (serverMethod === 'delete') serverMethod = 'del'; // server.delete doesn't work, but server.post, server.put does :(
     server[serverMethod](route.path, wrappedFunction);
+  });
+};
+
+// help catch errors from /model
+const asyncMiddleware = fn => (req, res, next) => {
+  Promise.resolve(fn(req, res, next))
+  .catch((e) => {
+    console.error(e);
+    next();
   });
 };

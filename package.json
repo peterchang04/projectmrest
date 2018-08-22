@@ -3,6 +3,7 @@
     "test": "mocha \"src/**/*.test.js\" --exit"
   },
   "dependencies": {
+    "cache-require-paths": "^0.3.0",
     "mongodb": "^3.1.1",
     "restify": "^7.2.1",
     "socket.io": "^2.1.1",

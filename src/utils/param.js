@@ -80,6 +80,11 @@ module.exports.defineArgs = (params, definition) => {
       if (actualType === 'object') actualType = paramsCopy[key].constructor.name;
       errors.push(`[${key}] should be type [${definition[key].type}] was [${actualType}]`);
     }
+
+    // check notEmpty
+    if (definition[key].notEmpty && types[definition[key].type].isEmpty(paramsCopy[key])) {
+      errors.push(`[${key}] cannot be blank`);
+    }
   });
 
   if (errors.length) {

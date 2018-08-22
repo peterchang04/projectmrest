@@ -1,5 +1,6 @@
 const mdb = require('../utils/mdb');
 const defineArgs = require('../utils/param').defineArgs;
+const ObjectID = require('mongodb').ObjectID;
 
 module.exports.health = async (params) => {
   return [];
@@ -62,7 +63,11 @@ module.exports.upsertMongoTest = async (params) => {
 
   const request = await mdb.collection('test').update({ _id: args._id }, { $set: args }, { upsert: true });
   // use get function to return new record
-  return await module.exports.getMongoTest({ _id: args._id });
+  if (request.result.upserted && request.result.upserted.length) {
+    return await module.exports.getMongoTest({ _id: request.result.upserted[0]._id });
+  }
+  // made it here? shouldn't have
+  throw new Error('Upsert failed');
 };
 
 module.exports.deleteMongoTest = async (params) => {

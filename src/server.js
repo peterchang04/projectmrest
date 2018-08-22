@@ -14,7 +14,12 @@ process.on('unhandledRejection', (reason, p) => { throw reason });
 server.use(restify.plugins.queryParser({ mapParams: true })); // parse url params
 server.use(restify.plugins.bodyParser({ mapParams: true })); // parse JSON body
 
+// only init once
+let initted = false;
+
 function init(port = 51337) {
+  if (initted) return; // only init once, even if each test is asking for it
+  initted = true;
   return new Promise(async (resolve, reject) => {
     try {
       // FIRST, CONNECT TO DATASOURCES
@@ -62,6 +67,8 @@ function init(port = 51337) {
 module.exports.init = init;
 module.exports.server = server;
 module.exports.close = () => { // method for shutting down server
+  if (!initted) return;
+  initted = false;
   mdb.close();
   server.close();
 };

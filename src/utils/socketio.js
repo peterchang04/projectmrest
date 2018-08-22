@@ -15,7 +15,7 @@ module.exports.init = (server) => {
 
   io.on('connection', function(socket) {
     const token = socket.handshake.query.token; // look for token identifier from client
-    console.log(`a user (id:${socket.id}) connected`);
+    console.log(`a websocket user (id:${socket.id}) connected`);
 
     // remember this socket
     sockets[socket.id] = socket;

@@ -1,7 +1,7 @@
 var expect = require('chai').expect;
 var chai = require('chai');
 var chaiHttp = require('chai-http');
-var server = require('../../src/server').server;
+var server = require('../../src/server');
 chai.use(chaiHttp);
 
 const persistValues = {}; // save value across requests
@@ -19,7 +19,7 @@ const expectedShape = {
 
 describe('GET/v1/health', function() {
   it('should return 200 { healthy: true }', (done) => {
-    chai.request(server)
+    chai.request(server.server)
     .get('/v1/health')
     .end((err, res) => {
       delete res.body.serverIP; // this key is dynamic
@@ -36,7 +36,7 @@ describe('GET/v1/health', function() {
 
 describe('PUT/v1/mongotest (add 1 new)', function() {
   it('request checks out', (done) => {
-    chai.request(server)
+    chai.request(server.server)
     .put('/v1/mongotest')
     .set('content-type', 'application/json')
     .send(Object.assign({}, expectedShape, {
@@ -71,7 +71,7 @@ describe('PUT/v1/mongotest (add 1 new)', function() {
 
 describe('PUT/v1/mongotest (add new #2)', function() {
   it('request checks out', (done) => {
-    chai.request(server)
+    chai.request(server.server)
     .put('/v1/mongotest')
     .set('content-type', 'application/json')
     .send(Object.assign({}, expectedShape, {
@@ -109,7 +109,7 @@ describe('PUT/v1/mongotest (add new #2)', function() {
 
 describe('GET/v1/mongotest (query for recently added 2)', function() {
   it('request checks out', (done) => {
-    chai.request(server)
+    chai.request(server.server)
     .get('/v1/mongotest?per=2&order=desc&orderBy=created')
     .end((err, res) => {
       expect(res.status).to.equal(200);
@@ -124,7 +124,7 @@ describe('GET/v1/mongotest (query for recently added 2)', function() {
 
 describe('PUT/v1/mongotest/:_id (update #1)', function() {
   it('request checks out', (done) => {
-    chai.request(server)
+    chai.request(server.server)
     .put(`/v1/mongotest/${persistValues._id}`)
     .send(Object.assign({}, expectedShape, {
       number: "-1",
@@ -160,7 +160,7 @@ describe('PUT/v1/mongotest/:_id (update #1)', function() {
 
 describe('GET/v1/mongotest/:_id (query for updated one)', function() {
   it('request checks out', (done) => {
-    chai.request(server)
+    chai.request(server.server)
     .get(`/v1/mongotest/${persistValues._id}`)
     .end((err, res) => {
       expect(res.status).to.equal(200);
@@ -187,7 +187,7 @@ describe('GET/v1/mongotest/:_id (query for updated one)', function() {
 
 describe('DELETE/v1/mongotest/:_id (remove _id)', function() {
   it('request checks out', (done) => {
-    chai.request(server)
+    chai.request(server.server)
     .delete(`/v1/mongotest/${persistValues._id}`)
     .end((err, res) => {
       expect(res.status).to.equal(200);
@@ -204,7 +204,7 @@ describe('DELETE/v1/mongotest/:_id (remove _id)', function() {
 
 describe('DELETE/v1/mongotest/:_id2 (remove _id2)', function() {
   it('request checks out', (done) => {
-    chai.request(server)
+    chai.request(server.server)
     .delete(`/v1/mongotest/${persistValues._id2}`)
     .end((err, res) => {
       expect(res.status).to.equal(200);
@@ -217,4 +217,17 @@ describe('DELETE/v1/mongotest/:_id2 (remove _id2)', function() {
       done();
     });
   }).timeout(1000);;
+});
+
+// SETUP + TEARDOWN - REQUIRED FOR EVERY HTTP TEST FILE
+before('setting up server', async () => {
+  try {
+    await server.init(51338); // mocha shouldn't use 51337 which is dev server
+  } catch (e) {
+    console.error('error setting up server', e);
+    return;
+  }
+});
+after('tearing down server', () => {
+  server.close();
 });

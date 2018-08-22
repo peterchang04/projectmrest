@@ -1,5 +1,3 @@
-ObjectID = require('mongodb').ObjectID;
-
 let routes = [
   {
     method: "GET", path: "/v1/health",
@@ -7,7 +5,7 @@ let routes = [
   }
 ];
 
-if (true /* TODO: is developemnt */) {
+if (true /* TODO: is development */) {
   const upsertMongoParams = { // reuse this
     _id: {            required: false,  type: "ObjectID" },
     name: {           required: true,   type: "string" },

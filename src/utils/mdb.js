@@ -1,10 +1,11 @@
 const MongoClient = require('mongodb').MongoClient;
-
 const dbName = 'test';
-const option = { useNewUrlParser: true };
+const option = { useNewUrlParser: true, connectTimeoutMS: 7000 };
 const username = 'app';
 const password = 'lQD2ayo9imUuCaKH';
-let uri = `mongodb+srv://${encodeURIComponent(`${username}:${password}`)}@cluster0-isoin.gcp.mongodb.net/test?retryWrites=true`;
+// retryWrites = true commented out for indexes ops, which fail when retryWrites=true
+// let uri = `mongodb+srv://${encodeURIComponent(`${username}:${password}`)}@cluster0-isoin.gcp.mongodb.net/test?retryWrites=true`;
+let uri = `mongodb+srv://${encodeURIComponent(`${username}:${password}`)}@cluster0-isoin.gcp.mongodb.net/test`;
 
 let connection = null;
 

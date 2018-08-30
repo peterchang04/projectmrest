@@ -7,7 +7,8 @@
     "mongodb": "^3.1.1",
     "restify": "^7.2.1",
     "socket.io": "^2.1.1",
-    "socket.io-redis": "^5.2.0"
+    "socket.io-redis": "^5.2.0",
+    "twilio": "^3.19.2"
   },
   "devDependencies": {
     "chai": "^4.1.2",

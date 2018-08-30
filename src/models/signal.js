@@ -3,34 +3,48 @@ const defineArgs = require('../utils/param').defineArgs;
 const date = require('../utils/date');
 const identifierUtil = require('../utils/identifier');
 const ObjectID = require('mongodb').ObjectID;
+// twilio
+const twilioAccountSid = 'ACa92a64d720ce5ec43fa71482affe11f6';
+const twilioAuthToken = 'ea45bcbb77c7a8dc74deeb5797bb50d9';
+const client = require('twilio')(twilioAccountSid, twilioAuthToken);
+let twilioToken = null;
+let twilioTokenCreated = null;
 
 async function _setIndexes() {
   // set indexes for signal collections
   const result = await mdb.collection('identifier').ensureIndex('identifier', { unique: true });
-  return [{
-    collection: 'identifier', unique: true
-  }];
+  return [
+    { collection: 'identifier', unique: true }
+  ];
 };
 
 async function getIdentifier(params) {
   const args = defineArgs(params, {
-    checkIdentifier: { required: false, type: 'string' }
+    preferredIdentifier: { required: false, type: 'string' }
   });
 
-  if (args.checkIdentifier) {
-    const checkResult = await _checkIdentifier({ identifier: args.checkIdentifier });
-    if (checkResult[0].exists) {
-      // update the record's modified date
-      const updateResult = await mdb.collection('identifier').update(
-        { identifier: args.checkIdentifier },
-        { $set: { modified: new Date() }}
-      );
-      return [{ identifier: args.checkIdentifier }];
+  let identifier = null;
+  let attempts = null;
+
+  // if a browser has an identifier we want to persist it best of ability
+  if (args.preferredIdentifier) {
+    const existingIdentifier = await _getIdentifier({ identifier: args.preferredIdentifier });
+    // see if preferred is taken by another socketId
+    if (existingIdentifier.length === 1) {
+      identifier = existingIdentifier[0].identifier;
+    } else {
+      const saveIdentifier = await _saveIdentifier({ identifier: args.preferredIdentifier });
+      identifier = saveIdentifier[0].identifier;
     }
   }
 
-  // IT DOESN'T EXIST!
-  return await _generateIdentifier();
+  // Still no identifier?
+  if (!identifier) {
+    const identifierResult = await _generateIdentifier();
+    identifier = identifierResult[0].identifier;
+  }
+
+  return [{ identifier }];
 };
 
 async function _saveIdentifier(params) {
@@ -61,7 +75,7 @@ async function _saveIdentifier(params) {
 
 async function _deleteIdentifier(params) {
   const args = defineArgs(params, {
-    identifier: { required: true, type: 'string', notEmpty: true }
+    identifier: { required: false, type: 'string', notEmpty: true }
   });
 
   const request = await mdb.collection('identifier').deleteOne({ identifier: args.identifier });
@@ -72,32 +86,11 @@ async function _deleteIdentifier(params) {
   }
 };
 
-async function _checkIdentifier(params) {
-  let exists = false;
-  let expiredDeleted = false; // set to true if expired iden was removed
+async function _getIdentifier(params) {
   const args = defineArgs(params, {
-    identifier: { required: true, type: 'string', notEmpty: true },
-    expireMinutes: { required: false, type: 'number', default: (60 * 24 * 7) }
+    identifier: { required: true, type: 'string', notEmpty: true }
   });
-
-  const filter = { identifier: args.identifier };
-  const result = await mdb.collection('identifier').find(filter).toArray();
-
-  // IT EXISTS, but check for valid date
-  if (result.length === 1) {
-    exists = true;
-    // check the last modified date
-    const ageMinutes = date.diff(result[0].modified, new Date());
-    if (ageMinutes > args.expireMinutes) {
-      // delete it and return false
-      const delResult = await _deleteIdentifier(args);
-      exists = false;
-      expiredDeleted = true;
-    }
-  }
-
-  // return existing identifier
-  return [{ identifier: args.identifier, exists, expiredDeleted }];
+  return await mdb.collection('identifier').find({ identifier: args.identifier }).toArray();
 };
 
 async function _generateIdentifier(params) {
@@ -114,8 +107,8 @@ async function _generateIdentifier(params) {
     if (attempt > maxAttempts) throw new Error('signal._generateIdentifier() too many attempts');
     const identifierCandidate = identifierUtil.generate(args.randomMin, args.randomMax);
     // check to see if it's taken
-    const checkResult = await _checkIdentifier({ identifier: identifierCandidate });
-    if (checkResult[0].exists === false) {
+    const checkResult = await _getIdentifier({ identifier: identifierCandidate });
+    if (checkResult.length === 0) {
       identifier = identifierCandidate;
     }
   }
@@ -126,11 +119,34 @@ async function _generateIdentifier(params) {
   return saveResult;
 };
 
+function _getTwilioTokenPromise() { // wrap twilio token in promise for async usage
+  return new Promise((resolve, reject) => {
+    try {
+      client.tokens.create()
+      .then(token => {
+        resolve(token);
+      }).done();
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+async function _getIceServers(params) {
+  // get a new token every 20 hrs. Tokens are good for 24 hrs, but client side caches for 2hr so buffer time
+  if (!twilioToken || date.diff(twilioTokenCreated, new Date()) > (60 * 20 /* 20 hrs */)) {
+    twilioToken = await _getTwilioTokenPromise();
+    twilioTokenCreated = new Date();
+  }
+  return twilioToken.iceServers;
+};
+
 module.exports = {
   getIdentifier,
   _setIndexes,
-  _checkIdentifier,
   _deleteIdentifier,
   _saveIdentifier,
-  _generateIdentifier
+  _generateIdentifier,
+  _getIceServers,
+  _getIdentifier
 };

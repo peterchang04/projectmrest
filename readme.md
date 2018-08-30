@@ -4,7 +4,9 @@ required windows 10 pro + hyperV enabled in bios
 ### share drive (via docker) to allow mapped volume to work
 docker(windows tray right click) > Settings > Shared Drives > C (or whatever drive project is running on)
 ### allow for pushing to dockerhub repo
-cmd.exe > docker login
+cmd.exe > docker login (1!d)
+### allow access to google container registry
+gcloud auth configure-docker (may have to install gcloud first, see below)
 ### install nodemon
 yarn global add nodemon
 ### launching docker container

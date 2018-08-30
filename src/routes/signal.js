@@ -19,10 +19,9 @@ let routes = [
   },
   {
     method: "GET", path: "/_v1/signal/identifier/:identifier",
-    model: "signal", func: "_checkIdentifier",
+    model: "signal", func: "_getIdentifier",
     params: {
-      identifier: { required: true, type: "string" }, // from cookie, check to see if it is still valid
-      expireMinutes: { required: false, type: 'number' } // defaulted to 7 days in /model
+      identifier: { required: true, type: "string" } // from cookie, check to see if it is still valid
     },
     description: `
       Check if identiifer exists.
@@ -56,6 +55,10 @@ let routes = [
     params: {
       identifier: { required: true, type: "string" }
     }
+  },
+  {
+    method: "GET", path: "/_v1/signal/ice",
+    model: "signal", func: "_getIceServers"
   }
 ];
 

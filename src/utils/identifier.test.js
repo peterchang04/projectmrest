@@ -49,7 +49,7 @@ describe('identifier.generate() run 100 times', function() {
 
   it('should split into at least 2 pieces', () => {
     for (var i = 0; i < results.length; i++) {
-      expect(results[i].split('-').length).to.be.above(1);
+      expect(results[i].split(' ').length).to.be.above(1);
     }
   });
 

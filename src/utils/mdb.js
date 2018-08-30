@@ -11,12 +11,12 @@ let connection = null;
 
 connect = (callback) => new Promise((resolve, reject) => {
   MongoClient.connect(uri, option, function(err, client) {
-      if (err) {
-        reject(err);
-        return;
-      };
-      resolve(client);
-      connection = client;
+    if (err) {
+      reject(err);
+      return;
+    };
+    resolve(client);
+    connection = client;
   });
 });
 

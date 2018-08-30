@@ -1,23 +1,23 @@
 const identifierTypes = [
-  "%count%-%adverb%-%verb%ing-%noun%",
-  "%adverb%-%verb%ing-%count%-%noun%",
-  "%count%-%verb%ing-%noun%",
-  "%verb%ing-%count%-%noun%",
-  "%adverb%-%verb%ing-%noun%",
-  "%adverb%-%verb%-%count%-%noun%",
-  "%verb%-%count%-%noun%",
-  "%verb%ing-%noun%",
-  "%verb%-%noun%"
+  "%count% %adverb% %verb%ing %noun%",
+  "%adverb% %verb%ing %count% %noun%",
+  "%count% %verb%ing %noun%",
+  "%verb%ing %count% %noun%",
+  "%adverb% %verb%ing %noun%",
+  "%adverb% %verb% %count% %noun%",
+  "%verb% %count% %noun%",
+  "%verb%ing %noun%",
+  "%verb% %noun%"
 ];
 // short words best
-const nouns = [
-  'llamas', 'cats', 'toads'
+const nouns = [ // plural
+  'llamas', 'cats', 'toads', 'cupcakes', 'knights', 'ants', 'hippos', 'feet'
 ];
-const verbs = [ // must work as [verb]ing e.g. fucking
-  'eat', 'kick', 'kiss'
+const verbs = [ // must work as [verb]ing e.g. fucking. Stick w/ physical
+  'eat', 'kick', 'kiss', 'push', 'lick', 'pull', 'color', 'throw', 'chew'
 ];
 const adverbs = [
-  'eagerly', 'slowly', 'weirdly'
+  'eagerly', 'slowly', 'weirdly', 'kindly', 'slyly', 'firmly', 'quickly'
 ];
 
 function generate(min = 5, max = 99) {

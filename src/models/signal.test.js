@@ -23,16 +23,13 @@ describe('[GET/_v1/signal/identifier/xyz-test] check for identifier (!exist)', f
     .end((err, res) => {
       expect(res.status).to.equal(200);
       expect(res.body.target).to.equal('GET/_v1/signal/identifier/:identifier');
-      expect(res.body.data.length).to.equal(1);
-      expect(res.body.data[0].identifier).to.equal('xyz-test');
-      expect(res.body.data[0].exists).to.equal(false);
-      expect(res.body.data[0].expiredDeleted).to.equal(false);
+      expect(res.body.data.length).to.equal(0);
       done();
     });
   }).timeout(1000);
 });
 
-describe('[POST/_v1/signal/identifier]', function() {
+describe('[POST/_v1/signal/identifier] generate an identifier', function() {
   it('checks out', (done) => {
     chai.request(server.server)
     .post('/_v1/signal/identifier')
@@ -57,8 +54,6 @@ describe('[GET/_v1/signal/identifier/xyz-test] check for identifier (exist!)', f
       expect(res.body.target).to.equal('GET/_v1/signal/identifier/:identifier');
       expect(res.body.data.length).to.equal(1);
       expect(res.body.data[0].identifier).to.equal('xyz-test');
-      expect(res.body.data[0].exists).to.equal(true);
-      expect(res.body.data[0].expiredDeleted).to.equal(false);
       done();
     });
   }).timeout(1000);
@@ -73,38 +68,6 @@ describe('[POST/_v1/signal/identifier] fail unique constraint', function() {
     .end((err, res) => {
       expect(res.status).to.equal(500);
       expect(res.body.target).to.equal('POST/_v1/signal/identifier');
-      done();
-    });
-  }).timeout(1000);
-});
-
-describe('[GET/_v1/signal/identifier/xyz-test] check again, but this time expire it', function() {
-  it('should return 200 { healthy: true }', (done) => {
-    chai.request(server.server)
-    .get('/_v1/signal/identifier/xyz-test?expireMinutes=-5')
-    .end((err, res) => {
-      expect(res.status).to.equal(200);
-      expect(res.body.target).to.equal('GET/_v1/signal/identifier/:identifier');
-      expect(res.body.data.length).to.equal(1);
-      expect(res.body.data[0].identifier).to.equal('xyz-test');
-      expect(res.body.data[0].expiredDeleted).to.equal(true); // got deleted per negative expiration
-      expect(res.body.data[0].exists).to.equal(false); // got deleted
-      done();
-    });
-  }).timeout(1000);
-});
-
-describe('[POST/_v1/signal/identifier] setup for DELETE', function() {
-  it('checks out', (done) => {
-    chai.request(server.server)
-    .post('/_v1/signal/identifier')
-    .set('content-type', 'application/json')
-    .send({ identifier: "xyz-test" })
-    .end((err, res) => {
-      expect(res.status).to.equal(200);
-      expect(res.body.target).to.equal('POST/_v1/signal/identifier');
-      expect(res.body.data.length).to.equal(1);
-      expect(res.body.data[0].identifier).to.equal('xyz-test');
       done();
     });
   }).timeout(1000);
@@ -142,7 +105,7 @@ describe('[POST/_v1/signal/identifier/generate] OK', function() {
 });
 
 let rememberIdentifier = null;
-describe('[GET/v1/signal/identifier]', function() {
+describe('[GET/v1/signal/identifier] get a new random identifier', function() {
   // passing in randomMin=1 randomMax=1 means all permutations used up and will fail
   it('checks out', (done) => {
     chai.request(server.server)
@@ -153,21 +116,6 @@ describe('[GET/v1/signal/identifier]', function() {
       expect(res.body.data.length).to.equal(1);
       expect(res.body.data[0].identifier.length).to.be.above(0);
       rememberIdentifier = res.body.data[0].identifier;
-      done();
-    });
-  }).timeout(1000);
-});
-
-describe('[GET/v1/signal/identifier?checkIdentifier=remember]', function() {
-  // passing in randomMin=1 randomMax=1 means all permutations used up and will fail
-  it('checks out', (done) => {
-    chai.request(server.server)
-    .get(`/v1/signal/identifier?checkIdentifier=${rememberIdentifier}`)
-    .end((err, res) => {
-      expect(res.status).to.equal(200);
-      expect(res.body.target).to.equal('GET/v1/signal/identifier');
-      expect(res.body.data.length).to.equal(1);
-      expect(res.body.data[0].identifier).to.equal(rememberIdentifier);
       done();
     });
   }).timeout(1000);
@@ -198,6 +146,20 @@ describe('[POST/_v1/signal/setIndexes]', function() {
       expect(res.body.data.length).to.equal(1);
       expect(res.body.data[0].collection).to.equal('identifier');
       expect(res.body.data[0].unique).to.equal(true);
+      done();
+    });
+  }).timeout(1000);
+});
+
+describe('[GET/_v1/signal/ice]', function() {
+  it('checks out', (done) => {
+    chai.request(server.server)
+    .get('/_v1/signal/ice')
+    .end((err, res) => {
+      expect(res.status).to.equal(200);
+      expect(res.body.target).to.equal('GET/_v1/signal/ice');
+      expect(res.body.data.length).to.be.above(0);
+
       done();
     });
   }).timeout(1000);

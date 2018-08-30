@@ -4,6 +4,13 @@ var loader = require('./utils/loader');
 var wiring = require('./utils/wiring');
 var mdb = require('./utils/mdb');
 var socketio = require('./utils/socketio');
+const dns = require('dns'); // to solve for server ip
+const os = require('os'); // to solve for server ip
+
+// solve for host ip
+dns.lookup(os.hostname(), function(err, add, fam) {
+  server.ip = add;
+});
 
 // server always UTC
 process.env.TZ = 'UTC';
@@ -34,6 +41,7 @@ function init(port = 51337) {
       // GLOBAL POST-REQUEST HANDLER
       server.use((req, res, next) => {
         // console.log('use', res);
+        res.header('Access-Control-Allow-Origin', '*');
         next();
       });
 

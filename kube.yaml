@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: projectmrest-kube-deploy
 spec:
-  replicas: 2
+  replicas: 3
   template:
     metadata:
       labels:

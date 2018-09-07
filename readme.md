@@ -41,7 +41,7 @@ gcloud builds submit --tag gcr.io/projectm-212101/dev .
 # Docker
 ### To build image
 docker build -t peterchang04/projectmrest .
-### To push image to dockerhub
+### To push image to gcr (WRONG. PUSHES TO DOCKERHUB)
 docker push peterchang04/projectmrest
 ### To start container
 

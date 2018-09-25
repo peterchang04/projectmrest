@@ -15,19 +15,57 @@ steps:
 # run tests
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['test']
-# build docker image locally
+# build docker image locally -- substitutions stored at cloud build trigger
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/projectmrest/development', '-f', 'Dockerfile_cloudbuild', '.']
+  args: ['build',
+    '-t', 'gcr.io/projectmrest/development:$REVISION_ID',
+    '-f', 'Dockerfile_cloudbuild',
+    '--build-arg', 'env=${_ENV}',
+    '--build-arg', 'twilioAccountSid=${_TWILIO_ACCOUNT_SID}',
+    '--build-arg', 'twilioAuthToken=${_TWILIO_AUTH_TOKEN}',
+    '--build-arg', 'mongoEndpoint=${_MONGO_ENDPOINT}',
+    '--build-arg', 'mongoDatabase=${_MONGO_DATABASE}',
+    '--build-arg', 'mongoUsername=${_MONGO_USERNAME}',
+    '--build-arg', 'mongoPassword=${_MONGO_PASSWORD}',
+    '--build-arg', 'socketioRedisEndpoint=${_SOCKETIO_REDIS_ENDPOINT}',
+    '--build-arg', 'socketioRedisPort=${_SOCKETIO_REDIS_PORT}',
+    '--build-arg', 'socketioRedisPassword=${_SOCKETIO_REDIS_PASSWORD}',
+    '--build-arg', 'revision_id=$REVISION_ID',
+    '.'
+  ]
 # push ready-to-deploy image to container registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/projectmrest/development']
-# deploy to kubernetes 1st time only, in absence of Kube Engine/Workload
+  args: ['push', 'gcr.io/projectmrest/development:$REVISION_ID']
+# create a new instance template, to update instance groups to.
 - name: 'gcr.io/cloud-builders/gcloud'
-  entrypoint: 'bash'
-  args:
-  - '-c'
-  - |
-    gcloud components install kubectl
-    gcloud container clusters get-credentials projectmrest-kube-cluster-staging --zone us-west1-b
-    sed -id "s/THIS_STRING_IS_REPLACED_BY_CLOUDBUILD_YAML/$(date)/g" kube.yaml
-    kubectl apply -f kube.yaml
+  args: [
+    'beta', 'compute', 'instance-templates',
+    'create-with-container', 'prjmr-itmp-dev-$REVISION_ID',
+    '--container-image', 'gcr.io/projectmrest/development:$REVISION_ID',
+    '--boot-disk-device-name', 'prjmr-itmp-dev-boot-$REVISION_ID',
+    '--boot-disk-size', '10GB',
+    '--boot-disk-type', 'pd-standard',
+    '--machine-type', 'f1-micro',
+    '--maintenance-policy', 'MIGRATE',
+    '--region', 'us-west1',
+    '--tags', 'http-server,https-server'
+  ]
+  # update cloud instance group with latest image
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: [
+      'beta', 'compute', 'instance-groups', 'managed', 'rolling-action',
+      'start-update', 'projectmrest-instancegroup-dev',
+      '--version', 'template=prjmr-itmp-dev-$REVISION_ID',
+      '--max-surge', '1',
+      '--max-unavailable', '1',
+      '--zone', 'us-west1-b'
+    ]
+  # build Dockerfile_local, for local development -- substitutions stored at cloud build trigger
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build',
+      '-t', 'gcr.io/projectmrest/local',
+      '.'
+    ]
+  # push local development image to container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/projectmrest/local']

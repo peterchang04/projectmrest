@@ -13,8 +13,8 @@ yarn global add nodemon
 use bat file (from project dir, windows only)
 
 # Environments
-### development (dev) - for local development
-### integration (int) - for staging
+### local (dev) - for local development
+### development (int) - for staging
 ### production (prod)
 
 # Deployment Overview
@@ -39,16 +39,17 @@ gcloud config set compute/zone us-east1-b
 gcloud builds submit --tag gcr.io/projectm-212101/dev .
 
 # Docker
-### To build image
-docker build -t peterchang04/projectmrest .
-### To push image to gcr (WRONG. PUSHES TO DOCKERHUB)
-docker push peterchang04/projectmrest
+### To build image (Dockerfile)
+docker build -t gcr.io/projectmrest/local .
+### To push image to gcr (tagged as latest)
+docker push gcr.io/projectmrest/local
 ### To start container
+
 
 # Redis
 db projectm-redis
-pw wM6js9sgfIhN6DsvphjoRCo4cnuS3I9E
-redis-14119.c1.us-central1-2.gce.cloud.redislabs.com:14119
+connection info stored @ cloudbuild trigger
+
 # Redsmin (monitoring GUI)
 https://app.redsmin.com/server/5b7769b49630d4fc0510f01d/finder/*
 peter.chang.04@gmail.com ...te1!rm

@@ -14,7 +14,11 @@ module.exports.init = (server) => {
   });
 
   // hook up to redis - support for multiple servers
-  io.adapter(redisAdapter({ host: 'redis-14119.c1.us-central1-2.gce.cloud.redislabs.com', port: 14119, password: 'wM6js9sgfIhN6DsvphjoRCo4cnuS3I9E' }));
+  io.adapter(redisAdapter({
+    host: process.env.socketioRedisEndpoint,
+    port: process.env.socketioRedisPort,
+    password: process.env.socketioRedisPassword 
+  }));
 
   io.on('connection', function(socket) {
     console.log(`a websocket user (id:${socket.id}) connected`);

@@ -21,7 +21,11 @@ module.exports.wireRoutesToModels = (routes, models, server) => {
       // end health check early
       if (req.route && req.route.method === 'GET' && req.route.path === '/v1/health') {
         envelope.healthy = true;
-        res.send(200, envelope);
+        if (envelope.params_RAW && ('pretty' in envelope.params_RAW)) {
+          res.sendRaw(200, JSON.stringify(envelope, null, 4));
+        } else {
+          res.send(200, envelope);
+        }
         return next();
       } else {
         console.log('incoming request:', envelope.serverIP, envelope.target, JSON.stringify(req.params));
@@ -52,7 +56,13 @@ module.exports.wireRoutesToModels = (routes, models, server) => {
         }
         statusCode = 500;
       }
-      res.send(statusCode, envelope);
+
+      if (envelope.params_RAW && ('pretty' in envelope.params_RAW)) {
+        res.sendRaw(statusCode, JSON.stringify(envelope, null, 4));
+      } else {
+        res.send(statusCode, envelope);
+      }
+
       next();
     });
 

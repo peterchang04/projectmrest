@@ -1,16 +1,13 @@
 FROM node:8.11-alpine
 MAINTAINER peter
 
-# Ports
-ENV PORT 51337
-EXPOSE 51337
-
 # Directories
 ENV APP_DIR /app
 WORKDIR $APP_DIR
 
 # Environment Defaults - see build trigger for values passed in
 ARG env=
+ARG port=
 ARG twilioAccountSid=
 ARG twilioAuthToken=
 ARG mongoEndpoint=
@@ -24,6 +21,7 @@ ARG revision_id=
 
 # Environment Variables
 ENV env=$env
+ENV port=$port
 ENV twilioAccountSid=$twilioAccountSid
 ENV twilioAuthToken=$twilioAuthToken
 ENV mongoEndpoint=$mongoEndpoint
@@ -34,6 +32,9 @@ ENV socketioRedisEndpoint=$socketioRedisEndpoint
 ENV socketioRedisPort=$socketioRedisPort
 ENV socketioRedisPassword=$socketioRedisPassword
 ENV revision_id=$revision_id
+
+# Ports
+EXPOSE $port
 
 # Copy package manager files
 COPY package*.json ./
@@ -48,6 +49,7 @@ COPY . $APP_DIR
 
 # Copy Environment Variables to /.env (vue config)
 RUN sed -i "s|env=|env=$env |g" $APP_DIR/.env \
+ && sed -i "s|port=|port=$port |g" $APP_DIR/.env \
  && sed -i "s|twilioAccountSid=|twilioAccountSid=$twilioAccountSid |g" $APP_DIR/.env \
  && sed -i "s|twilioAuthToken=|twilioAuthToken=$twilioAuthToken |g" $APP_DIR/.env \
  && sed -i "s|mongoEndpoint=|mongoEndpoint=$mongoEndpoint |g" $APP_DIR/.env \
@@ -60,7 +62,7 @@ RUN sed -i "s|env=|env=$env |g" $APP_DIR/.env \
  && sed -i "s|revisionId=|revisionId=$revision_id |g" $APP_DIR/.env
 
 # Healthcheck
-ENV HEALTHCHECK_URI "http://127.0.0.1:${PORT}/v1/health"
+ENV HEALTHCHECK_URI "http://127.0.0.1:${port}/v1/health"
 HEALTHCHECK --interval=20s --timeout=30s --retries=15 CMD curl --fail ${HEALTHCHECK_URI} || exit 1
 
 # Launch

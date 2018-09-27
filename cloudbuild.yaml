@@ -21,6 +21,7 @@ steps:
     '-t', 'gcr.io/projectmrest/development:$REVISION_ID',
     '-f', 'Dockerfile_cloudbuild',
     '--build-arg', 'env=${_ENV}',
+    '--build-arg', 'port=${_PORT}',
     '--build-arg', 'twilioAccountSid=${_TWILIO_ACCOUNT_SID}',
     '--build-arg', 'twilioAuthToken=${_TWILIO_AUTH_TOKEN}',
     '--build-arg', 'mongoEndpoint=${_MONGO_ENDPOINT}',

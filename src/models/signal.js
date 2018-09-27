@@ -4,8 +4,8 @@ const date = require('../utils/date');
 const identifierUtil = require('../utils/identifier');
 const ObjectID = require('mongodb').ObjectID;
 // twilio
-const twilioAccountSid = process.env.twilioAccountSid || process.env.default_twilioAccountSid;
-const twilioAuthToken = process.env.twilioAuthToken || process.env.default_twilioAuthToken;
+const twilioAccountSid = process.env.twilioAccountSid || process.env.twilioAccountSid_default;
+const twilioAuthToken = process.env.twilioAuthToken || process.env.twilioAuthToken_default;
 const client = require('twilio')(twilioAccountSid, twilioAuthToken);
 let twilioToken = null;
 let twilioTokenCreated = null;

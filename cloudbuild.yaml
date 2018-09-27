@@ -50,22 +50,22 @@ steps:
     '--region', 'us-west1',
     '--tags', 'http-server,https-server'
   ]
-  # update cloud instance group with latest image
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args: [
-      'beta', 'compute', 'instance-groups', 'managed', 'rolling-action',
-      'start-update', 'projectmrest-instancegroup-dev',
-      '--version', 'template=prjmr-itmp-dev-$REVISION_ID',
-      '--max-surge', '1',
-      '--max-unavailable', '1',
-      '--zone', 'us-west1-b'
-    ]
-  # build Dockerfile_local, for local development -- substitutions stored at cloud build trigger
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build',
-      '-t', 'gcr.io/projectmrest/local',
-      '.'
-    ]
-  # push local development image to container Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/projectmrest/local']
+# update cloud instance group with latest image
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: [
+    'beta', 'compute', 'instance-groups', 'managed', 'rolling-action',
+    'start-update', 'projectmrest-instancegroup-dev',
+    '--version', 'template=prjmr-itmp-dev-$REVISION_ID',
+    '--max-surge', '1',
+    '--max-unavailable', '1',
+    '--zone', 'us-west1-b'
+  ]
+# build Dockerfile_local, for local development -- substitutions stored at cloud build trigger
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build',
+    '-t', 'gcr.io/projectmrest/local',
+    '.'
+  ]
+# push local development image to container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/projectmrest/local']

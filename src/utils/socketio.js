@@ -15,9 +15,9 @@ module.exports.init = (server) => {
 
   // hook up to redis - support for multiple servers
   io.adapter(redisAdapter({
-    host: process.env.socketioRedisEndpoint,
-    port: process.env.socketioRedisPort,
-    password: process.env.socketioRedisPassword 
+    host: process.env.socketioRedisEndpoint || process.env.default_socketioRedisEndpoint,
+    port: process.env.socketioRedisPort || process.env.default_socketioRedisPort,
+    password: process.env.socketioRedisPassword || process.env.default_socketioRedisPassword
   }));
 
   io.on('connection', function(socket) {

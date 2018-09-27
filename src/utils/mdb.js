@@ -1,9 +1,9 @@
 const MongoClient = require('mongodb').MongoClient;
-const dbName = process.env.mongoDatabase;
+const dbName = process.env.mongoDatabase || process.env.default_mongoDatabase;
 const option = { useNewUrlParser: true, connectTimeoutMS: 20000 };
-const username = process.env.mongoUsername;
-const password = process.env.mongoPassword;
-const endpoint = process.env.mongoEndpoint;
+const username = process.env.mongoUsername || process.env.default_mongoUsername;
+const password = process.env.mongoPassword || process.env.default_mongoPassword;
+const endpoint = process.env.mongoEndpoint || process.env.default_mongoEndpoint;
 // retryWrites = true commented out for indexes ops, which fail when retryWrites=true
 // let uri = `mongodb+srv://${encodeURIComponent(`${username}:${password}`)}@cluster0-isoin.gcp.mongodb.net/test?retryWrites=true`;
 let uri = `mongodb+srv://${encodeURIComponent(`${username}:${password}`)}@${endpoint}/${dbName}`;

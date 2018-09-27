@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var restify = require('restify');
 var server = restify.createServer();
 var loader = require('./utils/loader');

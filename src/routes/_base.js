@@ -2,6 +2,10 @@ let routes = [
   {
     method: "GET", path: "/v1/health",
     model: "base", func: "health"
+  },
+  {
+    method: "GET", path: "/v1/envs",
+    model: "base", func: "getEnvs"
   }
 ];
 

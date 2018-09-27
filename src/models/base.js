@@ -6,6 +6,10 @@ module.exports.health = async (params) => {
   return [];
 };
 
+module.exports.getEnvs = async (params) => {
+  return [process.env];
+}
+
 module.exports.getMongoTest = async (params) => {
   const args = defineArgs(params, {
     _id: {      required: false, type: 'ObjectID' },

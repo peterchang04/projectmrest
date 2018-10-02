@@ -20,6 +20,8 @@ module.exports.init = (server) => {
     password: process.env.socketioRedisPassword || process.env.socketioRedisPassword_default
   }));
 
+  io.set('origins', '*'); // CORS
+
   io.on('connection', function(socket) {
     console.log(`a websocket user (id:${socket.id}) connected`);
 

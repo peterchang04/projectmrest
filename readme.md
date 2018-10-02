@@ -44,7 +44,7 @@ docker build -t gcr.io/projectmrest/local .
 ### To push image to gcr (tagged as latest)
 docker push gcr.io/projectmrest/local
 ### To start container
-
+docker run -it -v %cd%:/app -p 51337:51337 gcr.io/projectmrest/local:latest
 
 # Redis
 db projectm-redis

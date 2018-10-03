@@ -10,7 +10,8 @@ module.exports.init = (server) => {
   io = socketio.listen(server.server, {
     path: '/io',
     pingInterval: 10000,
-    pingTimeout: 5000
+    pingTimeout: 5000,
+    transports: ['websocket']
   });
 
   // hook up to redis - support for multiple servers

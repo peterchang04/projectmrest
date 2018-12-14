@@ -26,7 +26,7 @@ module.exports.init = (server) => {
     console.log(`a websocket user (id:${socket.id}) connected`);
 
     socket.on('message', (message) => {
-      console.log('message received', message);
+      console.log('message received from socket', socket.id, new Date(), message);
       if (message.type in messageHandlers) {
         messageHandlers[message.type](message, socket);
       }
@@ -63,23 +63,32 @@ const messageHandlers = {
       room: identifier
     });
   },
-  "offer-relay": async (message, socket) => {
+  "check-peer": async (message, socket) => {
     // check which sockets are in the requested room (identifier)
     let clientsInRoom = {};
     if (io.sockets.adapter.rooms[message.recipientIdentifier]) {
       clientsInRoom = io.sockets.adapter.rooms[message.recipientIdentifier].sockets;
     }
+    console.log('clientsInRoom', clientsInRoom);
 
     // can't join rooms with nobody in it
     if (Object.keys(clientsInRoom).length === 0) {
-      return socket.send({ type: 'offer-noSuchIdentifier', serverIP });
+      return socket.send({ type: 'check-peer-fail', serverIP });
     }
 
-    // can't join own room
+    // can't join/invite own identifier
     if (message.recipientIdentifier === message.senderIdentifier) {
-      return socket.send({ type: 'offer-denyOwnIdentifier', serverIP });
+      return socket.send({ type: 'check-peer-fail', serverIP });
     }
 
+    // made it here? OK!!
+    return socket.send({
+      type: 'check-peer-success',
+      serverIP,
+      recipientIdentifier: message.recipientIdentifier
+    });
+  },
+  "offer-relay": async (message, socket) => {
     socket.to(message.recipientIdentifier).send({
       type: 'offer',
       serverIP,

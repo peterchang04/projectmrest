@@ -88,53 +88,15 @@
     - source ip ranges: 0.0.0.0/0
     - protocols and ports: tcp:80
 
-### Everything Below is OLD
-
-
-# Dev environment Setup
-### install docker for windows
-required windows 10 pro + hyperV enabled in bios
-### share drive (via docker) to allow mapped volume to work
-docker(windows tray right click) > Settings > Shared Drives > C (or whatever drive project is running on)
-### allow for pushing to dockerhub repo
-cmd.exe > docker login (1!d)
-### allow access to google container registry
-gcloud auth configure-docker (may have to install gcloud first, see below)
-### install nodemon
-yarn global add nodemon
-### launching docker container
-use bat file (from project dir, windows only)
-
-# Environments
-### local (dev) - for local development
-### development (int) - for staging
-### production (prod)
-
-# Deployment Overview
-1. push to development branch
-2. Cloud Build Trigger "Stage Deploy on development merge" runs cloudbuild.yaml
-  - builds project
-  - pushes image to Google Container Registry (GCR) as [peterchang04/projectmrest/development]
-  - asks kubernetes to update image
-3. Kubernetes
-  - distributes image to workflow
-
-# Google Cloud build
-### Project: "projectmrest"
-### local setup https://cloud.google.com/cloud-build/docs/quickstart-docker
-login
-gcloud config set project projectmrest
-gcloud config set compute/zone us-east1-b
-### build+pushing image
-gcloud builds submit --tag gcr.io/projectm-212101/dev .
-
 # Docker
 ### To build image (Dockerfile)
-docker build -t gcr.io/projectm-REST/local .
+docker build -t gcr.io/projectm-rest/local .
 ### To push image to gcr (tagged as latest)
-docker push gcr.io/projectm-REST/local
+docker push gcr.io/projectm-rest/local
 ### To start container
-docker run -it -v %cd%:/app -p 51337:51337 gcr.io/projectm-REST/local:latest
+docker run -it -v %cd%:/app -p 51337:51337 gcr.io/projectm-test/local:latest
+### to connect to docker container
+docker exec -it <container_name> /bin/sh
 
 # Redis
 db projectm-redis

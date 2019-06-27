@@ -3,6 +3,7 @@ MAINTAINER peter
 
 # Directories
 ENV APP_DIR /app
+ENV APP_DIR_TEST /appx
 WORKDIR $APP_DIR
 
 # Environment Defaults - see build trigger for values passed in
@@ -20,6 +21,7 @@ ARG socketioRedisPassword=
 ARG revision_id=
 
 # Environment Variables
+ENV APP_DIR_TEST2 /appx2
 ENV env=$env
 ENV port=$port
 ENV twilioAccountSid=$twilioAccountSid

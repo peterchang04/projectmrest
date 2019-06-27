@@ -45,6 +45,20 @@ COPY yarn.lock ./
 RUN yarn install
 RUN yarn global add nodemon
 
+# Copy Environment Variables to /.env
+RUN sed -i "s|env=|env=$env |g" $APP_DIR/.env \
+ && sed -i "s|port=|port=$port |g" $APP_DIR/.env \
+ && sed -i "s|twilioAccountSid=|twilioAccountSid=$twilioAccountSid |g" $APP_DIR/.env \
+ && sed -i "s|twilioAuthToken=|twilioAuthToken=$twilioAuthToken |g" $APP_DIR/.env \
+ && sed -i "s|mongoEndpoint=|mongoEndpoint=$mongoEndpoint |g" $APP_DIR/.env \
+ && sed -i "s|mongoDatabase=|mongoDatabase=$mongoDatabase |g" $APP_DIR/.env \
+ && sed -i "s|mongoUsername=|mongoUsername=$mongoUsername |g" $APP_DIR/.env \
+ && sed -i "s|mongoPassword=|mongoPassword=$mongoPassword |g" $APP_DIR/.env \
+ && sed -i "s|socketioRedisEndpoint=|socketioRedisEndpoint=$socketioRedisEndpoint |g" $APP_DIR/.env \
+ && sed -i "s|socketioRedisPort=|socketioRedisPort=$socketioRedisPort |g" $APP_DIR/.env \
+ && sed -i "s|socketioRedisPassword=|socketioRedisPassword=$socketioRedisPassword |g" $APP_DIR/.env \
+ && sed -i "s|revisionId=|revisionId=$revision_id |g" $APP_DIR/.env
+
 # Healthcheck
 ENV HEALTHCHECK_URI "http://127.0.0.1:${PORT}/v1/health"
 HEALTHCHECK --interval=20s --timeout=30s --retries=15 CMD curl --fail ${HEALTHCHECK_URI} || exit 1

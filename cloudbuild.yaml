@@ -50,7 +50,7 @@ steps:
   args: [
     'beta', 'compute', 'instance-templates',
     'create-with-container', 'prjmr-itmp-dev-$REVISION_ID',
-    '--container-image', 'gcr.io/projectm-REST/development:$REVISION_ID',
+    '--container-image', 'gcr.io/projectm-rest/development:$REVISION_ID',
     '--boot-disk-device-name', 'prjmr-itmp-dev-boot-$REVISION_ID',
     '--boot-disk-size', '10GB',
     '--boot-disk-type', 'pd-standard',
@@ -64,7 +64,7 @@ steps:
 - name: 'gcr.io/cloud-builders/gcloud'
   args: [
     'beta', 'compute', 'instance-groups', 'managed', 'rolling-action',
-    'start-update', 'projectmrest-instancegroup-dev',
+    'start-update', 'projectm-rest-instancegroup-dev',
     '--version', 'template=prjmr-itmp-dev-$REVISION_ID',
     '--max-surge', '1',
     '--max-unavailable', '1',

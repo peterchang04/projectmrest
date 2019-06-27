@@ -75,6 +75,18 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build',
     '-t', 'gcr.io/projectm-rest/local',
+    '--build-arg', 'env=local',
+    '--build-arg', 'port=51337',
+    '--build-arg', 'twilioAccountSid=${_TWILIO_ACCOUNT_SID}',
+    '--build-arg', 'twilioAuthToken=${_TWILIO_AUTH_TOKEN}',
+    '--build-arg', 'mongoEndpoint=${_MONGO_ENDPOINT}',
+    '--build-arg', 'mongoDatabase=${_MONGO_DATABASE}',
+    '--build-arg', 'mongoUsername=${_MONGO_USERNAME}',
+    '--build-arg', 'mongoPassword=${_MONGO_PASSWORD}',
+    '--build-arg', 'socketioRedisEndpoint=${_SOCKETIO_REDIS_ENDPOINT}',
+    '--build-arg', 'socketioRedisPort=${_SOCKETIO_REDIS_PORT}',
+    '--build-arg', 'socketioRedisPassword=${_SOCKETIO_REDIS_PASSWORD}',
+    '--build-arg', 'revision_id=$REVISION_ID',
     '.'
   ]
 

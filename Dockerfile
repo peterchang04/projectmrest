@@ -9,6 +9,34 @@ EXPOSE 51337
 ENV APP_DIR /app
 WORKDIR $APP_DIR
 
+# Environment Defaults - see cloud build trigger for values passed in
+ARG env=
+ARG port=
+ARG twilioAccountSid=
+ARG twilioAuthToken=
+ARG mongoEndpoint=
+ARG mongoDatabase=
+ARG mongoUsername=
+ARG mongoPassword=
+ARG socketioRedisEndpoint=
+ARG socketioRedisPort=
+ARG socketioRedisPassword=
+ARG revision_id=
+
+# Environment Variables
+ENV env=$env
+ENV port=$port
+ENV twilioAccountSid=$twilioAccountSid
+ENV twilioAuthToken=$twilioAuthToken
+ENV mongoEndpoint=$mongoEndpoint
+ENV mongoDatabase=$mongoDatabase
+ENV mongoUsername=$mongoUsername
+ENV mongoPassword=$mongoPassword
+ENV socketioRedisEndpoint=$socketioRedisEndpoint
+ENV socketioRedisPort=$socketioRedisPort
+ENV socketioRedisPassword=$socketioRedisPassword
+ENV revision_id=$revision_id
+
 # Copy package manager files
 COPY package*.json ./
 COPY yarn.lock ./

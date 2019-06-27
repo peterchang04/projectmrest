@@ -18,8 +18,8 @@ steps:
   args: ['install']
 
 # run tests TODO RE-ENABLE THIS
-#- name: 'gcr.io/cloud-builders/yarn'
-#  args: ['test']
+- name: 'gcr.io/cloud-builders/yarn'
+  args: ['test']
 
 # build docker image locally -- substitutions stored at cloud build trigger
 - name: 'gcr.io/cloud-builders/docker'

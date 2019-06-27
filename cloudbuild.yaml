@@ -24,7 +24,7 @@ steps:
 # build docker image locally -- substitutions stored at cloud build trigger
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build',
-    '-t', 'gcr.io/projectm-REST/development:$REVISION_ID',
+    '-t', 'gcr.io/projectm-rest/development:$REVISION_ID',
     '-f', 'Dockerfile_cloudbuild',
     '--build-arg', 'env=${_ENV}',
     '--build-arg', 'port=${_PORT}',
@@ -43,7 +43,7 @@ steps:
 
 # push ready-to-deploy image to container registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/projectm-REST/development:$REVISION_ID']
+  args: ['push', 'gcr.io/projectm-rest/development:$REVISION_ID']
 
 # create a new instance template, to update instance groups to.
 - name: 'gcr.io/cloud-builders/gcloud'
@@ -74,10 +74,10 @@ steps:
 # build Dockerfile_local, for local development -- substitutions stored at cloud build trigger
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build',
-    '-t', 'gcr.io/projectm-REST/local',
+    '-t', 'gcr.io/projectm-rest/local',
     '.'
   ]
 
 # push local development image to container Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/projectm-REST/local']
+  args: ['push', 'gcr.io/projectm-rest/local']

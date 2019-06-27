@@ -2,23 +2,29 @@ steps:
 # pull the latest from repo branch: development
 - name: 'gcr.io/cloud-builders/git'
   args: ['clone', 'https://github.com/peterchang04/projectmrest.git']
+
 - name: 'gcr.io/cloud-builders/git'
   args: ['fetch']
+
 - name: 'gcr.io/cloud-builders/git'
   args: ['checkout', 'development']
+
 # yarn globals
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['global', 'add', 'nodemon']
+
 # install package.json
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['install']
+
 # run tests
-- name: 'gcr.io/cloud-builders/yarn'
-  args: ['test']
+#- name: 'gcr.io/cloud-builders/yarn'
+#  args: ['test']
+
 # build docker image locally -- substitutions stored at cloud build trigger
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build',
-    '-t', 'gcr.io/projectmrest/development:$REVISION_ID',
+    '-t', 'gcr.io/projectm-REST/development:$REVISION_ID',
     '-f', 'Dockerfile_cloudbuild',
     '--build-arg', 'env=${_ENV}',
     '--build-arg', 'port=${_PORT}',
@@ -34,15 +40,17 @@ steps:
     '--build-arg', 'revision_id=$REVISION_ID',
     '.'
   ]
+
 # push ready-to-deploy image to container registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/projectmrest/development:$REVISION_ID']
+  args: ['push', 'gcr.io/projectm-REST/development:$REVISION_ID']
+
 # create a new instance template, to update instance groups to.
 - name: 'gcr.io/cloud-builders/gcloud'
   args: [
     'beta', 'compute', 'instance-templates',
     'create-with-container', 'prjmr-itmp-dev-$REVISION_ID',
-    '--container-image', 'gcr.io/projectmrest/development:$REVISION_ID',
+    '--container-image', 'gcr.io/projectm-REST/development:$REVISION_ID',
     '--boot-disk-device-name', 'prjmr-itmp-dev-boot-$REVISION_ID',
     '--boot-disk-size', '10GB',
     '--boot-disk-type', 'pd-standard',
@@ -51,6 +59,7 @@ steps:
     '--region', 'us-west1',
     '--tags', 'http-server,https-server'
   ]
+
 # update cloud instance group with latest image
 - name: 'gcr.io/cloud-builders/gcloud'
   args: [
@@ -61,12 +70,14 @@ steps:
     '--max-unavailable', '1',
     '--zone', 'us-west1-b'
   ]
+
 # build Dockerfile_local, for local development -- substitutions stored at cloud build trigger
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build',
-    '-t', 'gcr.io/projectmrest/local',
+    '-t', 'gcr.io/projectm-REST/local',
     '.'
   ]
+
 # push local development image to container Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/projectmrest/local']
+  args: ['push', 'gcr.io/projectm-REST/local']

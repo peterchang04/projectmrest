@@ -17,7 +17,7 @@ steps:
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['install']
 
-# run tests
+# run tests TODO RE-ENABLE THIS
 #- name: 'gcr.io/cloud-builders/yarn'
 #  args: ['test']
 

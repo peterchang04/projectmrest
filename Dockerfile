@@ -45,6 +45,9 @@ COPY yarn.lock ./
 RUN yarn install
 RUN yarn global add nodemon
 
+# Copy Current dir into image
+COPY . $APP_DIR
+
 # Copy Environment Variables to /.env
 RUN sed -i "s|env=|env=$env |g" $APP_DIR/.env \
  && sed -i "s|port=|port=$port |g" $APP_DIR/.env \

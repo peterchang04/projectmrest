@@ -60,12 +60,20 @@ steps:
     '--tags', 'http-server,https-server'
   ]
 
+# update cloud instance group to new instance template
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: [
+    'compute', 'instance-groups', 'managed',
+    'set-instance-template', 'projectm-rest-instancegroup-dev',
+    '--template', 'prjmr-itmp-dev-$REVISION_ID',
+    '--zone', 'us-west1-b'
+  ]
+
 # update cloud instance group with latest image
 - name: 'gcr.io/cloud-builders/gcloud'
   args: [
-    'beta', 'compute', 'instance-groups', 'managed', 'rolling-action',
+    'compute', 'instance-groups', 'managed', 'rolling-action',
     'replace', 'projectm-rest-instancegroup-dev',
-    '--version', 'template=prjmr-itmp-dev-$REVISION_ID',
     '--max-surge', '2',
     '--max-unavailable', '1',
     '--zone', 'us-west1-b'

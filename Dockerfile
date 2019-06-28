@@ -62,8 +62,8 @@ RUN sed -i "s|env=|env=$env |g" $APP_DIR/.env \
  && sed -i "s|revisionId=|revisionId=$revision_id |g" $APP_DIR/.env
 
 # Healthcheck
-ENV HEALTHCHECK_URI "http://127.0.0.1:${PORT}/v1/health"
-HEALTHCHECK --interval=20s --timeout=30s --retries=15 CMD curl --fail ${HEALTHCHECK_URI} || exit 1
+ENV HEALTHCHECK_URI "http://127.0.0.1:${port}/v1/health"
+HEALTHCHECK --interval=10s --timeout=15s --retries=3 CMD curl --start-period=20s --fail ${HEALTHCHECK_URI} || exit 1
 
 # Launch
 CMD nodemon -L $APP_DIR/src/main.js

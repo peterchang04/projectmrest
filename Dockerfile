@@ -1,10 +1,6 @@
 FROM node:8.11-alpine
 MAINTAINER peter
 
-# Ports
-ENV PORT 51337
-EXPOSE 51337
-
 # Directories
 ENV APP_DIR /app
 WORKDIR $APP_DIR
@@ -36,6 +32,9 @@ ENV socketioRedisEndpoint=$socketioRedisEndpoint
 ENV socketioRedisPort=$socketioRedisPort
 ENV socketioRedisPassword=$socketioRedisPassword
 ENV revision_id=$revision_id
+
+#ports
+EXPOSE $port
 
 # Copy package manager files
 COPY package*.json ./

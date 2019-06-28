@@ -64,9 +64,9 @@ steps:
 - name: 'gcr.io/cloud-builders/gcloud'
   args: [
     'beta', 'compute', 'instance-groups', 'managed', 'rolling-action',
-    'start-update', 'projectm-rest-instancegroup-dev',
+    'replace', 'projectm-rest-instancegroup-dev',
     '--version', 'template=prjmr-itmp-dev-$REVISION_ID',
-    '--max-surge', '1',
+    '--max-surge', '2',
     '--max-unavailable', '1',
     '--zone', 'us-west1-b'
   ]

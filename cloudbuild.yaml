@@ -48,7 +48,7 @@ steps:
 # create a new instance template, to update instance groups to.
 - name: 'gcr.io/cloud-builders/gcloud'
   args: [
-    'beta', 'compute', 'instance-templates',
+    'compute', 'instance-templates',
     'create-with-container', 'prjmr-itmp-dev-$REVISION_ID',
     '--container-image', 'gcr.io/projectm-rest/development:$REVISION_ID',
     '--boot-disk-device-name', 'prjmr-itmp-dev-boot-$REVISION_ID',

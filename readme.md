@@ -84,7 +84,7 @@
     - priority: 1000
     - direction: ingress
     - targets: specified target tags
-    - target tags: http
+    - target tags: http-server
     - source ip ranges: 0.0.0.0/0
     - protocols and ports: tcp:80
 
